@@ -19,6 +19,4 @@ interface ITaskProps {
   task: ITask;
 }
 
-interface ITasksProps {
-  tasks: ITask[];
-}
+interface ITasksProps {}

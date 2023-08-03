@@ -1,3 +1,6 @@
+import { memo, useCallback } from "react";
+import { useTasks } from "../contexts/tasks";
+
 const icon = {
   done: "✅",
   paused: "⏸️",
@@ -7,11 +10,21 @@ const icon = {
 };
 
 const Task: React.FC<ITaskProps> = ({ task }) => {
+  const { deleteTaskById } = useTasks();
+
+  const handleDelete = useCallback(() => {
+    deleteTaskById(task.id);
+  }, [deleteTaskById, task]);
+
   return (
     <div className="">
-      <h2 className="font-bold">
-        {task.title} - {icon[task.status]}
-      </h2>
+      <div className="flex gap-4">
+        <h2 className="font-bold">
+          {task.title} - {task.id}
+        </h2>
+        <span>{icon[task.status]}</span>
+        <button onClick={handleDelete}>Apagar</button>
+      </div>
       <p>{task.description}</p>
       {task.updates?.map((update) => (
         <blockquote key={update.id} className="ml-4">
@@ -22,4 +35,4 @@ const Task: React.FC<ITaskProps> = ({ task }) => {
   );
 };
 
-export default Task;
+export default memo(Task);

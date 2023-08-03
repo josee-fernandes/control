@@ -1,42 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Tasks from "../components/Tasks";
 
 import { randomUUID } from "node:crypto";
 
-function Home() {
-  const [tasks, setTasks] = useState<ITask[]>([]);
+import TasksContextProvider, { useTasks } from "../contexts/tasks";
+import { NextPage } from "next";
+import { IHomeProps } from "../@types/page";
 
-  const getTasks = () => {
-    const localItems = JSON.parse(localStorage.getItem("tasks")) ?? [];
+const Home: NextPage<IHomeProps> = () => {
+  const { createTask, deleteAllTasks } = useTasks();
 
-    setTasks(localItems);
-  };
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<TTaskStatus>("not-started");
 
-  const createTask = (task: ITask) => {
-    setTasks((oldTasks) => [...oldTasks, task]);
-  };
-
-  const deleteAllTasks = () => {
-    setTasks([]);
-
-    localStorage.removeItem("tasks");
-  };
-
-  const updateLocalTasks = (tasks: ITask[]) => {
-    const localItems = localStorage.getItem("tasks") ?? "{[]}";
-
-    if (localItems !== JSON.stringify(tasks)) {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
-  };
-
-  const handleAddTask = async () => {
+  const handleAddTask = useCallback(async () => {
     const task: ITask = {
       id: randomUUID(),
-      title: "Test",
-      description: "Description test",
-      status: "not-started",
+      title,
+      description,
+      status,
       updates: [
         {
           id: randomUUID(),
@@ -61,26 +45,16 @@ function Home() {
       console.error(error);
     } finally {
     }
-  };
+  }, [title, description, status, createTask]);
 
-  const handleDeleteAllTasks = async () => {
+  const handleDeleteAllTasks = useCallback(async () => {
     try {
       deleteAllTasks();
     } catch (error) {
       console.error(error);
     } finally {
     }
-  };
-
-  useEffect(() => {
-    getTasks();
-  }, []);
-
-  useEffect(() => {
-    if (tasks?.length > 0) {
-      updateLocalTasks(tasks);
-    }
-  }, [tasks]);
+  }, [deleteAllTasks]);
 
   return (
     <React.Fragment>
@@ -90,18 +64,84 @@ function Home() {
       <div>
         <div className="flex flex-col gap-4">
           <h1>Tarefas</h1>
-          <button className="bg-emerald-500" onClick={handleAddTask}>
-            Adicionar tarefa
-          </button>
-          <button className="bg-red-500" onClick={handleDeleteAllTasks}>
-            Apagar todas as tarefas
-          </button>
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <div className="flex gap-4">
+              <label htmlFor="title">Title</label>
+              <input
+                className="text-zinc-800"
+                type="text"
+                id="title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+              />
+            </div>
+            <div className="flex gap-4">
+              <label htmlFor="description">Description</label>
+              <input
+                className="text-zinc-800"
+                type="text"
+                id="description"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </div>
+            <div className="flex gap-4">
+              <label htmlFor="status">Status</label>
+              <select
+                className="text-zinc-800"
+                id="status"
+                defaultValue="not-started"
+                value={status}
+                onChange={(event) => {
+                  if (
+                    event.target.value === "done" ||
+                    event.target.value === "paused" ||
+                    event.target.value === "working" ||
+                    event.target.value === "dependent" ||
+                    event.target.value === "not-started"
+                  )
+                    setStatus(event.target.value);
+                }}
+              >
+                <option value="done">✅</option>
+                <option value="paused">⏸️</option>
+                <option value="working">🛠️</option>
+                <option value="dependent">🟨</option>
+                <option value="not-started">❌</option>
+              </select>
+            </div>
+            <div className="flex gap-4">
+              <button
+                className="bg-emerald-500 px-2 py-1"
+                onClick={handleAddTask}
+              >
+                Adicionar tarefa
+              </button>
+              <button
+                className="bg-red-500 px-2 py-1"
+                onClick={handleDeleteAllTasks}
+              >
+                Apagar todas as tarefas
+              </button>
+            </div>
+          </form>
         </div>
 
-        <Tasks tasks={tasks} />
+        <Tasks />
       </div>
     </React.Fragment>
   );
-}
+};
 
-export default Home;
+const HomeWithContexts: NextPage<IHomeProps> = (props) => {
+  return (
+    <TasksContextProvider>
+      <Home {...props} />
+    </TasksContextProvider>
+  );
+};
+
+export default HomeWithContexts;

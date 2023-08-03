@@ -5,7 +5,7 @@ const Tasks: React.FC<ITasksProps> = () => {
   const { tasks } = useTasks();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2">
       {tasks?.map((task) => (
         <Task key={task.id} task={task} />
       ))}

@@ -14,9 +14,10 @@ interface ITasksContextProps {
   setTasks: React.Dispatch<React.SetStateAction<ITask[]>>;
   getTasks: () => void;
   createTask: (task: ITask) => void;
+  updateTaskById: (updatedTask: ITask) => void;
+  updateLocalTasks: (tasks: ITask[]) => void;
   deleteTaskById: (id: string) => void;
   deleteAllTasks: () => void;
-  updateLocalTasks: (tasks: ITask[]) => void;
 }
 
 const TasksContext = createContext({} as ITasksContextProps);
@@ -33,6 +34,17 @@ const TasksContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const createTask = useCallback(
     (task: ITask) => {
       setTasks((oldTasks) => [...oldTasks, task]);
+    },
+    [setTasks]
+  );
+
+  const updateTaskById = useCallback(
+    (updatedTask: ITask) => {
+      setTasks((oldTasks) =>
+        oldTasks.map((oldTask) =>
+          oldTask.id === updatedTask.id ? updatedTask : oldTask
+        )
+      );
     },
     [setTasks]
   );
@@ -64,6 +76,7 @@ const TasksContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setTasks,
       getTasks,
       createTask,
+      updateTaskById,
       updateLocalTasks,
       deleteTaskById,
       deleteAllTasks,
@@ -73,6 +86,7 @@ const TasksContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setTasks,
       getTasks,
       createTask,
+      updateTaskById,
       updateLocalTasks,
       deleteTaskById,
       deleteAllTasks,

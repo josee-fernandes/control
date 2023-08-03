@@ -15,26 +15,19 @@ const Home: NextPage<IHomeProps> = () => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TTaskStatus>("not-started");
 
+  const resetForm = useCallback(() => {
+    setTitle("");
+    setDescription("");
+    setStatus("not-started");
+  }, [setTitle, setDescription, setStatus]);
+
   const handleAddTask = useCallback(async () => {
     const task: ITask = {
       id: randomUUID(),
       title,
       description,
       status,
-      updates: [
-        {
-          id: randomUUID(),
-          description: "Update test",
-        },
-        {
-          id: randomUUID(),
-          description: "Update test",
-        },
-        {
-          id: randomUUID(),
-          description: "Update test",
-        },
-      ],
+      updates: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -44,6 +37,7 @@ const Home: NextPage<IHomeProps> = () => {
     } catch (error) {
       console.error(error);
     } finally {
+      resetForm();
     }
   }, [title, description, status, createTask]);
 
@@ -106,11 +100,11 @@ const Home: NextPage<IHomeProps> = () => {
                     setStatus(event.target.value);
                 }}
               >
-                <option value="done">✅</option>
-                <option value="paused">⏸️</option>
-                <option value="working">🛠️</option>
-                <option value="dependent">🟨</option>
-                <option value="not-started">❌</option>
+                <option value="done">✅ Finalizado</option>
+                <option value="paused">⏸️ Pausado</option>
+                <option value="working">🛠️ Trabalhando</option>
+                <option value="dependent">🟨 Dependência</option>
+                <option value="not-started">❌ Não iniciado</option>
               </select>
             </div>
             <div className="flex gap-4">

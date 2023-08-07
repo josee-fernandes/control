@@ -9,7 +9,7 @@ const icon = {
   "not-started": "❌",
 };
 
-const Task: React.FC<ITaskProps> = ({ task }) => {
+const Task: React.FC<ITaskProps> = ({ task, column }) => {
   const { deleteTaskById, updateTaskById } = useTasks();
 
   const [editing, setEditing] = useState(false);
@@ -40,7 +40,7 @@ const Task: React.FC<ITaskProps> = ({ task }) => {
   }, [deleteTaskById, task]);
 
   return (
-    <div className="bg-zinc-950 p-4">
+    <div className="bg-zinc-950 p-4 min-w-[320px]">
       <div className="flex gap-4 items-center justify-between">
         <h2 className="font-bold">
           {task.title} - {task.id}
@@ -61,6 +61,31 @@ const Task: React.FC<ITaskProps> = ({ task }) => {
           ) : (
             <span>{icon[task.status]}</span>
           )}
+          {!column && (
+            <>
+              <button
+                className={
+                  editing ? "bg-emerald-500 px-2 py-1" : "bg-blue-500 px-2 py-1"
+                }
+                onClick={handleToggleEditing}
+              >
+                {editing ? "Editando" : "Editar"}
+              </button>
+              <button className="bg-red-500 px-2 py-1" onClick={handleDelete}>
+                Apagar
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+      <p>{task.description}</p>
+      {task.updates?.map((update) => (
+        <blockquote key={update.id} className="ml-4">
+          {">"} {update.description}
+        </blockquote>
+      ))}
+      {column && (
+        <div className="flex gap-2 justify-end">
           <button
             className={
               editing ? "bg-emerald-500 px-2 py-1" : "bg-blue-500 px-2 py-1"
@@ -73,13 +98,7 @@ const Task: React.FC<ITaskProps> = ({ task }) => {
             Apagar
           </button>
         </div>
-      </div>
-      <p>{task.description}</p>
-      {task.updates?.map((update) => (
-        <blockquote key={update.id} className="ml-4">
-          {">"} {update.description}
-        </blockquote>
-      ))}
+      )}
     </div>
   );
 };

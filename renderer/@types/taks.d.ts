@@ -17,6 +17,7 @@ interface ITask {
 
 interface ITaskProps {
   task: ITask;
+  column?: boolean;
 }
 
 interface ITasksProps {}

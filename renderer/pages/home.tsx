@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import Tasks from "../components/Tasks";
+import { NextPage } from "next";
+
+import { IHomeProps } from "../@types/page";
 
 import { randomUUID } from "node:crypto";
 
 import TasksContextProvider, { useTasks } from "../contexts/tasks";
-import { NextPage } from "next";
-import { IHomeProps } from "../@types/page";
+
+import Tasks from "../components/Tasks";
+import FilteredTasks from "../components/FilteredTasks";
 
 const Home: NextPage<IHomeProps> = () => {
   const { createTask, deleteAllTasks } = useTasks();
@@ -14,6 +17,8 @@ const Home: NextPage<IHomeProps> = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TTaskStatus>("not-started");
+
+  const [filteredTasks, setFilteredTasks] = useState(false);
 
   const resetForm = useCallback(() => {
     setTitle("");
@@ -49,6 +54,10 @@ const Home: NextPage<IHomeProps> = () => {
     } finally {
     }
   }, [deleteAllTasks]);
+
+  const handleToggleFilterTasks = useCallback(() => {
+    setFilteredTasks((oldFilteredTasks) => !oldFilteredTasks);
+  }, [setFilteredTasks]);
 
   return (
     <React.Fragment>
@@ -120,11 +129,14 @@ const Home: NextPage<IHomeProps> = () => {
               >
                 Apagar todas as tarefas
               </button>
+              <button onClick={handleToggleFilterTasks}>
+                Filtrar tarefas: {filteredTasks ? "✅" : "❌"}
+              </button>
             </div>
           </form>
         </div>
 
-        <Tasks />
+        {filteredTasks ? <FilteredTasks /> : <Tasks />}
       </div>
     </React.Fragment>
   );

@@ -18,7 +18,7 @@ const Home: NextPage<IHomeProps> = () => {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TTaskStatus>("not-started");
 
-  const [filteredTasks, setFilteredTasks] = useState(false);
+  const [filteredTasks, setFilteredTasks] = useState(true);
 
   const resetForm = useCallback(() => {
     setTitle("");
@@ -64,9 +64,9 @@ const Home: NextPage<IHomeProps> = () => {
       <Head>
         <title>Control</title>
       </Head>
-      <div>
+      <div className="w-screen h-screen flex flex-col gap-4">
         <div className="flex flex-col gap-4">
-          <h1>Tarefas</h1>
+          <h2>Criar tarefa</h2>
           <form
             className="flex flex-col gap-2"
             onSubmit={(event) => event.preventDefault()}
@@ -97,7 +97,7 @@ const Home: NextPage<IHomeProps> = () => {
                 className="text-zinc-800"
                 id="status"
                 defaultValue="not-started"
-                value={status}
+                value={status ?? "not-started"}
                 onChange={(event) => {
                   if (
                     event.target.value === "done" ||
@@ -136,7 +136,9 @@ const Home: NextPage<IHomeProps> = () => {
           </form>
         </div>
 
-        {filteredTasks ? <FilteredTasks /> : <Tasks />}
+        <div className="overflow-auto flex-1">
+          {filteredTasks ? <FilteredTasks /> : <Tasks />}
+        </div>
       </div>
     </React.Fragment>
   );

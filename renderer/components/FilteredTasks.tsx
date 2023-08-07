@@ -2,8 +2,6 @@ import { useMemo } from "react";
 import { useTasks } from "../contexts/tasks";
 import Task from "./Task";
 
-interface IFilteredTasks {}
-
 // const icon = {
 //   done: "✅",
 //   paused: "⏸️",
@@ -12,7 +10,7 @@ interface IFilteredTasks {}
 //   "not-started": "❌",
 // };
 
-const FilteredTasks: React.FC = () => {
+const FilteredTasks: React.FC<IFilteredTasksProps> = () => {
   const { tasks } = useTasks();
 
   const done = useMemo(
@@ -37,8 +35,8 @@ const FilteredTasks: React.FC = () => {
   );
 
   return (
-    <div className="flex gap-2 w-full max-h-[500px]">
-      <div className="flex flex-col gap-2">
+    <div className="flex gap-2 w-full h-full">
+      <div className="flex flex-col gap-2 min-w-[240px] max-w-[500px]">
         <div className="font-extrabold">Finalizado ✅</div>
         <div className="flex flex-col gap-2">
           {done?.map((task) => (
@@ -47,9 +45,9 @@ const FilteredTasks: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-red-700 w-2 h-full" />
+      <div className="bg-zinc-800 w-1 h-full" />
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 min-w-[240px] max-w-[500px]">
         <div className="font-extrabold">Pausado ⏸️</div>
         <div className="flex flex-col gap-2">
           {paused?.map((task) => (
@@ -58,7 +56,9 @@ const FilteredTasks: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="bg-zinc-800 w-1 h-full" />
+
+      <div className="flex flex-col gap-2 min-w-[240px] max-w-[500px]">
         <div className="font-extrabold">Trabalhando 🛠️</div>
         <div className="flex flex-col gap-2">
           {working?.map((task) => (
@@ -67,7 +67,9 @@ const FilteredTasks: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="bg-zinc-800 w-1 h-full" />
+
+      <div className="flex flex-col gap-2 min-w-[240px] max-w-[500px]">
         <div className="font-extrabold">Dependente 🟨</div>
         <div className="flex flex-col gap-2">
           {dependent?.map((task) => (
@@ -76,7 +78,9 @@ const FilteredTasks: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="bg-zinc-800 w-1 h-full" />
+
+      <div className="flex flex-col gap-2 min-w-[240px] max-w-[500px]">
         <div className="font-extrabold">Não iniciado ❌</div>
         <div className="flex flex-col gap-2">
           {notStarted?.map((task) => (

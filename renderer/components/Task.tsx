@@ -40,7 +40,7 @@ const Task: React.FC<ITaskProps> = ({ task, column }) => {
   }, [deleteTaskById, task]);
 
   return (
-    <div className="bg-zinc-950 p-4 min-w-[320px]">
+    <div className="bg-zinc-950 p-4 w-full">
       <div className="flex gap-4 items-center justify-between">
         <h2 className="font-bold">
           {task.title} - {task.id}
@@ -49,7 +49,7 @@ const Task: React.FC<ITaskProps> = ({ task, column }) => {
           {editing ? (
             <select
               className="text-zinc-800"
-              value={task.status}
+              value={task.status ?? "not-started"}
               onChange={handleUpdateTask}
             >
               <option value="done">✅ Finalizado</option>

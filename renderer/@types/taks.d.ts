@@ -21,3 +21,5 @@ interface ITaskProps {
 }
 
 interface ITasksProps {}
+
+interface IFilteredTasksProps;
